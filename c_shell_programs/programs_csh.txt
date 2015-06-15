@@ -1,0 +1,1253 @@
+#!/bin/csh
+
+echo" Please choose from the following menu options then hit the <Enter> key. "
+
+echo" Type a or A      To list names of the files in the current directory"
+echo" Type b or B      To display today's date and time"
+echo" Type c or C      To display users currently logged in to pizza"
+echo" Type d or D      To display whether a file is an ordinary file or a direct$
+echo" Type e or E      To display whether a file is an ordinary file or a direct$
+echo" Type x or X      To exit the program."
+
+
+echo "Enter your option: "
+set option = $<
+while( $option != x )
+
+switch ( $option )
+case 'a':
+ls
+breaksw
+
+case 'b':
+date
+breaksw
+
+case 'c':
+id
+
+breaksw
+
+case 'd':
+
+echo "Please enter file name:"
+set filename = $<
+
+if ( ( -f $filename ) ) then
+echo " $filename is an ordinary file "
+
+elseif ( ( -d $filename ) ) then
+echo "$filename is an ordinary directory "
+
+else
+echo " $filename is neither a directory or file"
+endif
+
+breaksw
+
+case 'e':
+echo "Please enter a filename to backup: "
+set backup = $<
+
+cp $backup $backup.bak
+
+breaksw
+
+case 'x':
+sleep 1
+echo"Bye now!"
+sleep 1
+endsw
+echo "Please input a choice: "
+set option = $<
+
+end
+
+
+
+
+============================================================================
+============================================================================
+
+#!/bin/tcsh
+echo -n 'Enter a number: '
+set number = $<
+if ( $number < 0 ) then
+echo You entered a negative number
+else if ($number == 0) then
+echo You entered zero
+else
+echo You entered a positive number
+endif
+
+============================================================================
+============================================================================
+
+ #!/bin/csh
+
+if (  ( $#argv == 0 ) ) then
+
+echo "Please pass in an argument. "
+exit 1
+endif
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set size = $fileInfo[6]
+set links = $fileInfo[3]
+set owner = $fileInfo[4]
+set month = $fileInfo[7]
+set day = $fileInfo[8]
+set time = $fileInfo[9]
+
+echo "Name: $fileName "
+echo "Size: $size "
+echo "Links: $links "
+echo "Owner: $owner "
+echo "Date modified: $month $day , $time"
+
+exit 0
+endif
+echo "Must be an ordinary file"
+exit 1
+
+
+============================================================================
+============================================================================
+
+#!bin/tcsh
+
+
+echo -n 'Enter two numbers: '
+set numbera = $<
+set numberb = $<
+
+if ( $numbera > 2 && $numberb > 4 ) then
+echo "Expression evaluation seems to work."
+
+else
+echo "Expression evaluation does not work"
+endif
+
+============================================================================
+============================================================================
+
+#!/bin/csh
+
+if ( $#argv == 0 ) then
+        set directory = "."     #if no directory is specified then the current d$
+else if ( $#argv > 1 ) then
+        echo " $0 Error: You entered too many parameters." #Error message for to$
+        exit 1
+else if ( ! -d $argv[1] ) then
+        echo " $0 Error: You entered a non-directory." #Error message for not en$
+        exit 1
+else
+        set directory = $argv[1]        #A regular directory was entered as a pa$
+endif
+
+#Initialize files array to file names in the specified directory.
+
+set files = `ls $directory`     #File substitution
+@ nfiles = $#files              #Number of files in the specified directory stor$
+@ index = 1                     #Array index initialized to point to the first f$
+@ sum = 0                       #Running sum initialized to zero.
+
+while ( $index <= $nfiles )
+        set thisFile = "$directory"/"$files[$index]"
+        if ( -f $thisFile ) then                #If the next file is an ordinary$
+                set argv = `ls -l $thisFile`    #Set Command line arguments.
+                @ sum = $sum + $argv[5]         #Add file size to the running su$
+                @ index++                       #Add file size to the current to$
+        else
+                @ index++       #Condition if next file is not a regular file.
+        endif
+end
+
+#Spell out the current directory.
+
+if ( "$directory" == "." ) then #Condition if no directory was entered.
+        set directory = "your current directory"
+endif
+
+echo "The size of all non-directory files in $directory is $sum bytes."
+
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+if ($#argv !=1) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+        if ( "$size" == 0 )then
+        rm -f "$fileName"
+        echo "$fileName was removed"
+        exit 0
+        else
+        set linkcount = $fileInfo[3]
+        set owner = $fileInfo[4]
+        set date= ($fileInfo[7] $fileInfo[8] $fileInfo[9])
+        echo "Name $fileName"
+        echo "Size $size"
+        echo "Linkcount $linkcount"
+        echo "Owner $owner"
+        echo "Date $date"
+        exit 0
+
+else
+echo "$0: Arguement must be an ordinary file"
+exit 1
+endif
+
+==========================================================================
+==========================================================================
+
+#! /bin/csh
+
+if ( $#argv != 1 ) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+        if ("$size" == 0 )then
+        rm -f "$fileName"
+        echo "$fileName removed"
+        exit 0
+        else
+        set linkcount = $fileInfo[3]
+        set owner = $fileInfo[4]
+        set date = ($fileInfo[7] $fileInfo[8], $fileInfo[9])
+        echo "Name $fileName"
+        echo "Size $size"
+        echo "Linkcount $linkcount"
+        echo "Owner $owner"
+        echo "Date $date"
+        exit 0
+else
+echo "$0: Argument must be an ordinary file"
+exit 1
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo "The command name is: $0"
+echo "The number of command line arguments are $#argv"
+echo -n "The first nine values of the command line arguments are: "
+echo "$1 $2 $3 $4 $5 $6 $7 $8 $9"
+echo "Here is a way to display values of all the arguments: $argv[*]"
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+echo -n "Enter a digit: "
+set var1 = `head -1`
+if ( ( "$var1" >= 1 ) && ( "$var1" <= 9 ) ) then
+        echo "Good Input!"
+else
+        echo "Bad Input!"
+endif
+
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+if ($#argv !=1) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+        if ( "$size" == 0 )then
+        rm -f "$fileName"
+        echo "$fileName was removed"
+        exit 0
+        else
+        set linkcount = $fileInfo[3]
+        set owner = $fileInfo[4]
+        set date= ($fileInfo[7] $fileInfo[8] $fileInfo[9])
+        echo "Name $fileName"
+        echo "Size $size"
+        echo "Linkcount $linkcount"
+        echo "Owner $owner"
+        echo "Date $date"
+        exit 0
+
+else
+echo "$0: Arguement must be an ordinary file"
+exit 1
+endif
+
+==========================================================================
+==========================================================================
+
+#! /bin/csh
+
+if ( $#argv != 1 ) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+        if ("$size" == 0 )then
+        rm -f "$fileName"
+        echo "$fileName removed"
+        exit 0
+        else
+        set linkcount = $fileInfo[3]
+        set owner = $fileInfo[4]
+        set date = ($fileInfo[7] $fileInfo[8], $fileInfo[9])
+        echo "Name $fileName"
+        echo "Size $size"
+        echo "Linkcount $linkcount"
+        echo "Owner $owner"
+        echo "Date $date"
+        exit 0
+else
+echo "$0: Argument must be an ordinary file"
+exit 1
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo "The command name is: $0"
+echo "The number of command line arguments are $#argv"
+echo -n "The first nine values of the command line arguments are: "
+echo "$1 $2 $3 $4 $5 $6 $7 $8 $9"
+echo "Here is a way to display values of all the arguments: $argv[*]"
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+echo -n "Enter a digit: "
+set var1 = `head -1`
+if ( ( "$var1" >= 1 ) && ( "$var1" <= 9 ) ) then
+        echo "Good Input!"
+else
+        echo "Bad Input!"
+endif
+
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo $name
+exit
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+
+if ($#argv != 1 )then
+echo "$0 Error: You entered either zero numbers or more than one number"
+exit 1
+end if
+
+@ size = $argv[1]
+
+if ( $size >= 1 ) then
+
+@ previous = 1
+@ current = 1
+echo -n " The list of Fibonaci numbers is: "
+
+        if ( $size == 1 )then
+        echo "$previous"
+        exit 0
+        endif
+        if ( $size == 2)then
+        echo "$previous $current"
+        exit 0
+        endif
+echo -n "$previous $current"
+@ size = $size-2
+@ temp = 0
+while ( $size > 0 )
+        @ temp = $current  #new previous
+        @ current = $current + $previous  # next number
+        @ previous = $temp
+        @ size--
+end
+endif
+echo " "
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+
+if ( $#argv != 1 ) then
+        echo "$0 Error: You entered either zero numbers or more than one number."
+        exit 1
+endif
+
+@ size = $argv[1]       # Number of Fibonacci numbers to be displayed
+if ( $size >= 1 ) then
+        @ previous = 1
+        @ current =1
+        echo -n  "The list of Fibonacci numbers is: "
+        if ( $size == 1 ) then
+                echo "$previous"
+                exit 0
+        endif
+        if ( $size == 2 ) then
+                echo "$previous $current"
+                exit 0
+        endif
+        echo -n "$previous $current"
+        @ size = $size - 2
+        @ temp = 0
+        while ( $size > 0 )
+                @ temp = $current                           # New previous
+                @ current = $current + $previous     # The next number
+                @ previous = $temp
+                echo -n " $current"
+                @ size--
+        end
+endif
+echo " "
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+if ( $#argv == 0 ) then
+        set directory = "."     #if no directory is specified then the current directory is taken as the parameter.
+else if ( $#argv > 1 ) then
+        echo " $0 Error: You entered too many parameters." #Error message for too many parameters.
+        exit 1
+else if ( ! -d $argv[1] ) then
+        echo " $0 Error: You entered a non-directory." #Error message for not entering a directory.
+        exit 1
+else
+        set directory = $argv[1]        #A regular directory was entered as a parameter
+endif
+
+#Initialize files array to file names in the specified directory.
+
+set files = `ls $directory`     #File substitution
+@ nfiles = $#files              #Number of files in the specified directory stored in nfiles.
+@ index = 1                     #Array index initialized to point to the first file name.
+@ sum = 0                       #Running sum initialized to zero.
+
+while ( $index <= $nfiles )
+        set thisFile = "$directory"/"$files[$index]"
+        if ( -f $thisFile ) then                #If the next file is an ordinary file.
+                set argv = `ls -l $thisFile`    #Set Command line arguments.
+                @ sum = $sum + $argv[5]         #Add file size to the running sum.
+                @ index++                       #Add file size to the current total.
+        else
+                @ index++       #Condition if next file is not a regular file.
+        endif
+end
+
+#Spell out the current directory.
+
+if ( "$directory" == "." ) then #Condition if no directory was entered.
+        set directory = "your current directory"
+endif
+
+echo "The size of all non-directory files in $directory is $sum bytes."
+
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+cat << DataTag
+
+This is a simple use of the here document.
+These data are the input to the cat command.
+
+mail $argv[1] << WRAPPER
+
+Hello,
+
+This is a reminder for the weekly meeting tomorrow.
+
+Mike
+
+WRAPPER
+
+echo "Sending mail to $argv[1] ...done"
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+if ( ( $#argv == 0 ) ) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+echo "Name\t\tInode\t\tSize"
+echo "$fileName\t$inode\t$size"
+exit 0
+endif
+echo "$0 Error: Must be an ordinary file"
+exit 1
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo -n "Enter input: " #-n keeps the cursor on the the same line
+set line = `echo $<`
+echo "You entered: $line"
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+
+@ size = $#argv         # Size of the input list
+@ index = 1     # Array index initialized to point to the first element
+@ sum = 0               # Running sum initialized to 0
+
+while ( $index <= $size )
+        @ sum = $sum + $argv[$index]    # Update the running sum
+        @ index++                               # Increment array index by 1
+end
+echo "The sum of the given $#argv numbers is $sum."
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+
+echo -n "Enter space seperated ints to add: "
+
+set nums = `head -1`
+
+@ size = $#argv
+
+
+@ size = $#nums    #Size of array
+@ index = 1             #Array index initialized to point to the first element
+@ sum = 0               #Running sum initialized to 0
+
+while ( $index <= $size )
+        @ sum = $sum + $nums[$index]       #Update the running sum
+        @ index++       #Increment array index by 1
+end
+
+echo "The sum of the given $#nums numbers is $sum."
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo -n "Enter nums to add: "
+set nums = `head -1`
+set Fibonacci = ( $nums )
+
+@ size = $#argv
+
+
+@ size = $#Fibonacci    #Size of fibonacci array
+@ index = 1             #Array index initialized to point to the first element
+@ sum = 0               #Running sum initialized to 0
+
+while ( $index <= $size )
+        @ sum = $sum + $Fibonacci[$index]       #Update the running sum
+        @ index++       #Increment array index by 1
+end
+
+echo "The sum of the given $#Fibonacci Fibonacci numbers is $sum."
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+set Fibonacci = ( 0 1 1 2 3 5 8 13 21 34 )
+
+@ size = $#Fibonacci    #Size of fibonacci array
+@ index = 1             #Array index initialized to point to the first element
+@ sum = 0               #Running sum initialized to 0
+
+while ( $index <= $size )
+        @ sum = $sum + $Fibonacci[$index]       #Update the running sum
+        @ index++       #Increment array index by 1
+end
+
+echo "The sum of the given $#Fibonacci Fibonacci numbers is $sum."
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+if ( $#argv != 1 ) then
+        echo "$0 Error: Please pass in an argument."
+        exit 1
+endif
+if ( -f $argv[1] ) then
+        set filename = $argv[1]
+        set fileinfo = `ls -il "$filename"`
+        set size = $fileinfo[6]
+        if ( "$size" == 0 ) then
+                rm -f "$filename"
+                echo "$filename was removed"
+                exit 0
+        else
+                set linkcount = $fileinfo[3]
+                set owner = $fileinfo[4]
+                set date = ($fileinfo[7] $fileinfo[8], $fileinfo[9])
+                echo "Name $filename"
+                echo "Size $size"
+                echo "LnkCnt $linkcount"
+                echo "Owner $owner"
+                echo "Date $date"
+                exit 0
+        endif
+else
+        echo "$0 : argument must be an ordinary file"
+        exit 1
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+set fileName = $argv[1]
+set argv = `ls -il $fileName`
+echo "The command line arguments are: $argv[*]"
+set inode = $argv[1]
+set size = $argv[6]
+echo "Name\t\tInode\t\tSize"  #'t' inserts a tab space
+echo "$fileName\t$inode\t$size"
+exit 0
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+
+echo "The name of this program is: $0"
+echo "The arguments are: $argv[*]"
+echo "The first three arguments are: $1 $2 $3"
+shift
+echo "The name of this program after shifting is still: $0"
+echo "The arguments after shifting are: $argv[*]"
+echo "The first three arguments after shifting are: $1 $2 $3"
+exit 0
+
+==========================================================================
+==========================================================================
+
+#! /bin/csh -f
+    #
+    # Example of a shell script to copy all files from one directory
+    # to another. The input directory must not contain any subdirectories,
+    # and it will not copy any so-called (hidden) dot-files.
+    #
+    #                    check if called properly
+    if ($#argv != 2) then
+        echo "Usage: $0 dir1 dir2"
+        echo "copies all files from one directory to another"
+        goto done
+    endif
+    ##                  save command line args in variables
+    set dir1=$1
+    set dir2=$2
+    ##                  check if dir1 indeed is an existing dir
+    if (! -d $dir1) then
+        echo "$dir1 is not a directory" ; exit 1
+    endif
+    ##                  check if dir2 does not exist
+    if (-e $dir2) then
+        echo "$dir2 already exists" ; exit 1
+    endif
+    ##                  create new dir2
+    mkdir $dir2
+    if ($status != 0) goto error
+    ##                  loop through all files in dir1
+    foreach file ($dir1/*)
+        if (-d $file) then
+            echo "Skipping $file (is a directory)"
+        else
+            echo "Copying $file"
+            cp $file $dir2
+        endif
+    end
+    ##           Labels to jump to exit OK (done) or not OK (error)
+    done:
+     exit 0
+    error:
+     exit 1
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+echo -n "Do you like the C shell? "
+set reply = $<
+if ( $reply == "yes" ) then
+echo You entered $reply
+else if ( $reply != "yes" ) then
+echo I can only assume you mean yes!
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+echo -n "Please enter a number greater than 2: "
+set a = $<
+echo -n "Please enter a number greater than 4: "
+set b = $<
+if ( $a > 2 && $b > 4 ) then
+echo "Expression evaluation seems to work."
+else
+echo "Expression evaluation does not work."
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+set a = 3
+set b = 5
+if ( $a > 2 && $b > 4 ) then
+echo Expression evaluation seems to work
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+echo -n "Enter the name of the file you wish to erase: "
+set filename = $<  #Get a line of input
+if ( ! ( -w "$filename" ) ) then #Check for access
+echo you do not have permission to erase that file!
+else
+rm $filename
+echo $filename file was file erased
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+set flag
+if (${?flag}) then
+ echo flag is set
+endif
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+foreach color ( red yellow green blue )
+    echo one color is $color
+end
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo gotta jump!
+goto endofScript #jump
+echo I will never echo this
+endofScript:    #label
+echo the end
+
+==========================================================================
+==========================================================================
+
+#!/bin/tcsh
+echo -n 'Enter a number: '
+set number = $<
+if ( $number < 0 ) then
+echo You entered a negative number
+else if ( $number == 0 ) then
+echo You entered zero
+else
+echo You entered a positive number
+endif
+
+==========================================================================
+==========================================================================
+
+#! /bin/tcsh
+# junk script
+#
+# Initialize variables
+#
+set fileList = ()       # a list of all specified files.
+set listFlag = 0        # set to 1 if -l option is specified.
+set purgeFlag = 0       # 1 if -p option is specified.
+set fileFlag = 0        # 1 if at least one file is specified.
+set junk = .junk        # the junk directory.
+#
+# Parse command line
+#
+foreach arg ($*)
+ switch ($arg)
+   case "-p":
+     set purgeFlag = 1
+     breaksw
+    case "-l":
+     set listFlag = 1
+     breaksw
+    case -*:
+     echo $arg is an illegal option
+     goto error
+     breaksw
+    default:
+     set fileFlag = 1
+     set fileList = ($fileList $arg) # append to list
+     breaksw
+ endsw
+end
+#
+# Check for too many options
+#
+@ total = $listFlag + $purgeFlag + $fileFlag
+if ($total != 1) goto error
+#
+# If junk directory doesn't exist, create it
+#
+if (!(-e $junk)) then
+ 'mkdir' $junk
+endif
+#
+# Process options
+#
+if ($listFlag) then
+ 'ls' -lgF $junk             # list junk directory.
+ exit 0
+endif
+#
+if ($purgeFlag) then
+ 'rm' $junk/*       # remove contents of junk directory.
+ exit 0
+endif
+#
+if ($fileFlag) then
+ 'mv' $fileList $junk        # move files to junk directory.
+ exit 0
+endif
+#
+exit 0
+#
+# Display error message and quit
+#
+error:
+cat << ENDOFTEXT
+Dear $USER, the usage of junk is as follows:
+ junk -p means "purge all files"
+ junk -l means "list junked files"
+ junk <list of files> to junk them
+ENDOFTEXT
+exit 1
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+echo "Switch Case Test Program"
+set stop = 0            # reset loop termination flag
+while ($stop == 0)      # loop until done
+ cat << ENDOFMENU       # display menu
+ 1   : print the date
+ 2   : who is on pizza
+ 3   : print the current working directory
+ 4   : exit
+ENDOFMENU
+ echo ""
+ echo -n "Your Choice? "      # prompt
+ set reply = $<              # read response
+ echo ""
+ switch ($reply)             # process response
+   case "1":
+     date                    # display date
+     breaksw
+   case "2":
+        who
+        breaksw
+   case "3":
+     pwd                     # display working directory
+     breaksw
+   case "4":
+ echo -n 'Goodbye!'
+echo ""
+echo ""
+     set stop = 1            # set loop termination flag
+     breaksw
+   default:                  # default
+     echo "Illegal Choice!"     # error
+     breaksw
+ endsw
+# echo
+end
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+set x = 1                    # set outer loop value
+while ($x <= $1)             # outer loop
+ set y = 1                   # set inner loop value
+ while ($y <= $1)            # inner loop
+   @ v = $x * $y             # calculate entry
+   echo -n $v " "            # display entry (tab in quotes)
+   @ y ++                    # update inner loop counter
+ end
+ echo ""                     # newline
+ @ x ++                      # update outer loop counter
+end
+
+==========================================================================
+==========================================================================
+
+#!/bin/csh
+onintr controlC    #set Control-C trap
+while (1)
+  echo Infinite Loop
+  sleep 1
+end
+controlC:
+echo control C detected
+#!/bin/tcsh
+echo "Please enter your name: "
+set name = $<
+echo Hi $name, your current directory is $cwd
+
+
+==========================================================================
+==========================================================================
+
+/* MAIN2.C */
+
+#include <stdio.h>
+#include "palindrome.h"
+
+/****************************************************************/
+
+main ()
+
+{
+  printf ("palindrome (\"kitty cat\") = %d\n", palindrome ("kitty cat"));
+  printf ("palindrome (\"racecar\") = %d\n", palindrome ("racecar"));
+}
+/*
+
+#include <stdio.h>
+#include <string.h>
+
+int palindromicity ( const char * numbuff )
+{
+    size_t i, len;
+    for( i = 0, len = strlen( numbuff ); i < len; i++ ) {
+        if( numbuff[i] != numbuff[len - 1 - i] ) return 0;
+    }
+
+    return 1;
+}
+
+int main ( void )
+{
+    char numbuff[32];
+    printf( "Please enter a integer:\n" );
+    fgets( numbuff, sizeof numbuff, stdin );
+    numbuff[strcspn( numbuff, "\n" )] = '\0';
+
+    printf( "&#37;s is%s palindromatic.\n", numbuff,
+        palindromicity( numbuff ) ? "" : " NOT" );
+
+    return 0;
+}*/
+
+==========================================================================
+==========================================================================\
+
+#include<stdio.h>
+#include<ctype.h>
+#include<string.h>
+
+int isPalindrome( char *s );
+
+int main ( void )
+
+{
+printf("Enter the word you want to check");
+   int i = 0;
+   int ch;
+   char s[100];
+
+   while ((ch = getchar()) != '\n') {
+      if (isalpha(ch)) {
+         s[i] = ch;
+         i++;
+      }
+   }
+
+   if ( isPalindrome(s) == 1) {
+      printf("Yes, is a palindrome.\n");
+   } else {
+      printf("No, not a palindrome.\n");
+   }
+
+   return 0;
+}
+int isPalindrome( char *s )
+{
+   int i = strlen(s)-1;
+   int j = 0;
+
+   while (j<=i) {
+      if(s[j] != s[i]) {
+         return 0;
+      }
+      i--;
+      j++;
+   }
+   return 1;
+}
+
+==========================================================================
+==========================================================================
+
+/* PALINDROME.C */
+
+#include "palindrome.h"
+#include "reverse.h"
+#include <string.h>
+
+/****************************************************************/
+
+int palindrome (str)
+
+char *str;
+
+{
+  char reversedStr [100];
+  reverse (str, reversedStr); /* Reverse original */
+  return (strcmp (str, reversedStr) == 0); /* Compare the two */
+}
+/* REVERSE.C */
+
+#include <stdio.h>
+#include "reverse.h"
+#include <string.h>
+
+/****************************************************************/
+
+reverse (before, after)
+
+char *before; /* A pointer to the original string */
+char *after; /* A pointer to the reversed string */
+
+{
+  int i;
+  int j;
+  int len;
+
+  len = strlen (before);
+
+  for (j = len - 1, i = 0; j >= 0; j--, i++) /* Reverse loop */
+    after[i] = before[j];
+
+  after[len] = 0; /* terminate reversed string */
+}
+
+==========================================================================
+==========================================================================
+
+#include<stdio.h>
+
+int main()
+{
+int year;
+
+printf("Enter a 4 digit year: ");
+scanf("%d", &year);
+if(year <1000 || year>9999){
+printf("Please enter a 4 digit number,%d is not a 4 digit year",year);
+scanf("%d", &year);
+}
+if(year%4 == 0 && year%400 == 0)
+printf("%d , is a leap year",year);
+else
+printf("%d ,is not a leap year",year);
+
+return 0;
+}
+
+==========================================================================
+==========================================================================
+
+#include<stdio.h>
+
+int main()
+{
+int a;
+int number;
+
+printf("Enter a number and let.s find out if it is prime or not:  ");
+scanf("%d", &number);
+if(number>=2)
+for(a=2; a <= number/a; a++)
+if((number%a)==0)
+break;
+
+if(number>1 && (!(a<=number/a)))
+printf("\n %d is a prime number.", number);
+else
+printf("\n %d is not a prime number", number);
+printf("\n");
+return 0;
+}
+
+
+
+
+==========================================
+#! /bin/csh
+
+if ( $#argv != 1 ) then
+echo "$0 Error: Please pass in an argument."
+exit 1
+endif
+if ( -f $argv[1] ) then
+set fileName = $argv[1]
+set fileInfo = `ls -il $fileName`
+set inode = $fileInfo[1]
+set size = $fileInfo[6]
+        if ("$size" == 0 )then
+        rm -f "$fileName"
+        echo "$fileName removed"
+        exit 0
+        else
+        set linkcount = $fileInfo[3]
+        set owner = $fileInfo[4]
+        set date = ($fileInfo[7] $fileInfo[8], $fileInfo[9])
+        echo "Name $fileName"
+        echo "Size $size"
+        echo "Linkcount $linkcount"
+        echo "Owner $owner"
+        echo "Date $date"
+        exit 0
+else
+echo "$0: Argument must be an ordinary file"
+exit 1
+endif
+========================================================
+#!/bin/csh
+
+echo" Please choose from the following menu options then hit the <Enter> key. "
+
+echo" Type a or A      To list names of the files in the current directory"
+echo" Type b or B      To display today's date and time"
+echo" Type c or C      To display users currently logged in to pizza"
+echo" Type d or D      To display whether a file is an ordinary file or a direct$
+echo" Type e or E      To display whether a file is an ordinary file or a direct$
+echo" Type x or X      To exit the program."
+
+
+echo "Enter your option: "
+set option = $<
+while( $option != x )
+
+switch ( $option )
+case 'a':
+ls
+breaksw
+
+case 'b':
+date
+breaksw
+
+case 'c':
+id
+
+breaksw
+
+case 'd':
+
+echo "Please enter file name:"
+set filename = $<
+
+if ( ( -f $filename ) ) then
+echo " $filename is an ordinary file "
+
+
+elseif ( ( -d $filename ) ) then
+echo "$filename is an ordinary directory "
+
+else
+echo " $filename is neither a directory or file"
+endif
+
+breaksw
+
+case 'e':
+echo "Please enter a filename to backup: "
+set backup = $<
+
+cp $backup $backup.bak
+
+breaksw
+
+case 'x':
+sleep 1
+echo"Bye now!"
+sleep 1
+endsw
+echo "Please input a choice: "
+set option = $<
+
+end

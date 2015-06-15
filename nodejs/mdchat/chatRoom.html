@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>MD Chat</title>
+</head>
+
+<style>
+body {
+  background-color: #333333;
+  color:#FFFFFF;
+  font: 16px/1.3 'Arial',sans-serif;
+}
+
+footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding-top: 30px;
+  background-color: #333333;
+  height: 130px;
+}
+
+#chatform {
+  width:700px;
+  margin: 0 auto;
+  background-color: white;
+}
+
+#textArea {
+  width: 550px;
+  height: 80px;
+  display: block;
+  float:left;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  padding-left: 20px;
+  padding-top: 20px;
+  resize: none;
+
+}
+
+#submit {
+  width: 110px;
+  height: 60px;
+  float:right;
+  text-align:center;
+  background-color: #73b4d4;
+  display: block;
+  margin: 0 auto;
+  border: none;
+  border-radius: 2px;
+  color:white;
+  font-weight: bold;
+  font-size: 17px;
+  outline: none;
+  cursor:pointer;
+}
+
+#messages {
+  background-color: #333333;
+  border-radius: 1px;
+  width:50%;
+  height: 450px;
+  overflow-y: auto;
+  position:absolute;
+  right:10px;
+  top  :10px;
+}
+
+#users {
+  float: left;
+  position: absolute;
+  left: 10px;
+  top: 70px;
+}
+
+</style>
+
+<body>
+  <h1>Welcome to the MD Chat</h1>
+
+  <div id="messages"></div>
+  <div id="users"><h1 style='color:blue;'>Users</h1></div>
+
+  <footer>
+    <div id="chatform">
+      <textarea id="textArea" VerticalScrollBarVisibility="Auto" placeholder="Talk to me..."></textarea>
+	    <button id ="submit" onclick="sendMessage()">SEND</button>
+    </div>
+  </footer>
+
+ <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+ <script src="/socket.io/socket.io.js"></script>
+ <script src="/markdown.js"></script>
+
+  <script>
+  function Message (Message, User) {
+    this.message = Message;
+    this.user = User;
+  }
+
+    var socket = io();
+    var messages = [new Message("Welcome!", "MDchat")];
+
+    var user = prompt("Please enter yout username: ");
+
+    //send iuser name to everyone
+    socket.emit("user connected", user);
+
+    socket.on ("current users", function (users){
+      //clear the list
+      $('#users p').remove();
+      //create the lsit
+      for (var i = 0; i < users.length; i++){
+        $("#users").append("<p>"+ users[i] +"</p>");
+      }
+    });
+
+    //listen for new message
+    socket.on('new message', function (message) {
+      messages.unshift(message);//adds message to begining of out array
+      displayMessages();
+    });
+
+    function displayMessages() {
+      $('#messages').html('');
+      for (var i = 0; i < 100; i++){
+        if (messages.length <= i) {
+          break;
+        }
+        var currentMessage = messages[i];
+        $('#messages').prepend("<span style='color:red;'>" + currentMessage.user +"</span><blockquote>" + markdown.toHTML(currentMessage.message) + "</blockquote>");
+      }
+      //auto scroll to bottom of message box
+      $(document).ready(function(){
+      $('#messages').animate({scrollTop: $('#messages')[0].scrollHeight}, 2000);
+      });
+    };
+
+	  function sendMessage() {
+      var message = new Message ($('#textArea').val(), user);
+      socket.emit('posting', message);
+      $('#textArea').val('');
+      }
+    displayMessages();
+  </script>
+
+</body>
+
+</html>

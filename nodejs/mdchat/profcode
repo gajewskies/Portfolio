@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>MD Chat</title>
+  <link rel="stylesheet" href="http:////maxcdn.bootstrapcdn.com/bootswatch/3.3.2/darkly/bootstrap.min.css">
+  <style>
+  #message {} #users {} #inputBar {}
+  </style>
+</head>
+
+<body>
+  <div class="page-header text-center">
+    <h1>Welcome to MD Chat</h1>
+  </div>
+  <div class="container">
+    <section id="messages" class='col-xs-10'></section>
+    <section id="users" ng-class="col-xs-2">
+      <h2>Users</h2>
+    </section>
+    <div class="clearfix"></div>
+    <footer id="inputBar" style="position:fixed; bottom:0; width: 90%;">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-11">
+            <textarea id="inputArea" class="form-control"></textarea>
+          </div>
+          <button onclick="sendMessage()" class="btn btn-info col-xs-1">Send</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  function Message(Message, User) {
+    this.message = Message;
+    this.user = User;
+  }
+  var socket = io();
+  var messages = [new Message("Welcome!", "MDChat")];
+
+  var user = prompt("Please enter your usename: ");
+
+  socket.on('new message', function(message) {
+    messages.unshift(message);
+    displayMessages();
+    //$('#messages').append("<blockquote>" + message + "</blockquote>");
+  });
+
+  function displayMessages() {
+    $('#messages').html('');
+    for (var i = 0; i < 5; i++) {
+      if (messages.length <= i) {
+        break;
+      }
+      var currentMessage = messages[i];
+      $('#messages').prepend(
+        "<span style='color:red;'>" + currentMessage.user + "</span><blockquote>" + currentMessage.message + "</blockquote>"
+      );
+    }
+  }
+
+
+
+
+  function sendMessage() {
+    var message = new Message($('#inputArea').val(), user);
+    socket.emit('posting', message);
+    $('#inputArea').val('');
+  }
+  displayMessages();
+  </script>
+</body>
+
+</html>
