@@ -1,0 +1,14 @@
+<h1>Welcome to the puppies page</h1>
+<a href="/about">Go to about</a>
+<a href="/">Go to home</a>
+
+<!-- 
+display all the items from the array from the controller and 
+display them here
+-->
+<ul>
+	<% @puppy_names.each do |name|	%>
+		<li><%= name %></li>
+
+	<% end %>
+</ul>

@@ -1,0 +1,21 @@
+<% names = ["Tyler", "Chris", "Douglas", "Hailey"] %> <!-- declare array -->
+<%
+ logged_in = true
+%>
+
+<% if @right_param %>
+  <h3> Correct! you can go to the next level </h3>
+  <a href="/level2"> GO </a>
+<% else %>
+  <h3> Incorrect! Try again</h3>
+<% end %>
+
+
+<% names.each do |name| %>                            <!-- loop through array -->
+  <h2><%= name %></h2>                                <!-- create html in loop, and display array items -->
+
+  <% if logged_in %>
+    <h3>is logged in</h3>
+  <% end %>
+
+<% end %>
